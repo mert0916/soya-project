@@ -1,0 +1,49 @@
+/* styles.css */
+
+/* Body için yazı tipi ve genel yapı */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Başlıklar için özel renkler */
+h1, h2, h3 {
+  color: #0f766e; /* Tailwind teal-700 */
+}
+
+/* Butonlara geçiş efekti */
+a {
+  transition: color 0.3s ease;
+}
+
+/* Footer linklerine hover efekti */
+footer a:hover {
+  color: #14b8a6; /* Tailwind teal-500 */
+}
+
+/* Geri sayım bölümü özel stilleri */
+.countdown-box {
+  background-color: #f0fdfa; /* teal-50 */
+  border: 1px solid #99f6e4; /* teal-200 */
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+body {
+  scroll-behavior: smooth;
+}
+
+img {
+  object-fit: cover;
+}
+/* İçerik kutusu üzerine hover efekti */
+.content-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Modal açıldığında sayfa kaymasını önleme */
+body.modal-open {
+  overflow: hidden;
+}
