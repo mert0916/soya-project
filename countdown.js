@@ -1,5 +1,6 @@
-// Yerel saatle 25 Haziran 2025, saat 14:00
-const hedefTarih = new Date(2025, 5, 25, 14, 0, 0).getTime();
+// 25 Haziran 2025, saat 14:00 Türkiye saatiyle hedefliyoruz
+const hedefTarih = new Date(2025, 5, 25, 14, 0, 0).getTime(); 
+// Not: Ay 0 tabanlıdır, Haziran = 5
 
 function geriSayimGuncelle() {
   const simdi = new Date().getTime();
@@ -21,5 +22,6 @@ function geriSayimGuncelle() {
   countdown.innerText = `${gun}g ${saat.toString().padStart(2, '0')}:${dakika.toString().padStart(2, '0')}:${saniye.toString().padStart(2, '0')}`;
 }
 
+// Sayacı her saniyede bir güncelle
 setInterval(geriSayimGuncelle, 1000);
-geriSayimGuncelle();
+geriSayimGuncelle(); // Sayfa yüklenir yüklenmez göster
