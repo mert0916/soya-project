@@ -1,5 +1,5 @@
-// 30 Haziran 2025, saat 20:00 tarihini hedefliyoruz
-const hedefTarih = new Date("2025-06-30T20:00:00").getTime();
+// 25 Haziran 2025, saat 14:00 tarihini hedefliyoruz
+const hedefTarih = new Date("2025-06-25T14:00:00").getTime();
 
 function geriSayimGuncelle() {
   const simdi = new Date().getTime();
@@ -23,4 +23,4 @@ function geriSayimGuncelle() {
 
 // Sayacı her saniyede bir güncelle
 setInterval(geriSayimGuncelle, 1000);
-geriSayimGuncelle(); // Sayfa yüklenir yüklenmez göster
+geriSayimGuncelle(); // Sayfa yüklenir yüklenmez göster.
