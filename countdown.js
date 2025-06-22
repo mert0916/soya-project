@@ -1,22 +1,26 @@
-// 25 Haziran 2025, saat 14:00 (yerel saat)
-const hedefTarih = new Date(2025, 5, 25, 14, 0, 0); // Haziran = 5
+// 25 Haziran 2025, saat 14:00 tarihini hedefliyoruz
+const hedefTarih = new Date("2025-06-25T14:00:00").getTime();
 
 function geriSayimGuncelle() {
-  const simdi = new Date();
-  const fark = countdown(simdi, hedefTarih, countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
+  const simdi = new Date().getTime();
+  const fark = hedefTarih - simdi;
+  const countdown = document.getElementById("countdown");
 
-  const countdownEl = document.getElementById("countdown");
-  if (!countdownEl) return;
+  if (!countdown) return;
 
-  if (fark.value <= 0) {
-    countdownEl.innerText = "Etkinlik başladı!";
-  } else {
-    countdownEl.innerText = `${fark.days}g ` +
-      `${fark.hours.toString().padStart(2, '0')}:` +
-      `${fark.minutes.toString().padStart(2, '0')}:` +
-      `${fark.seconds.toString().padStart(2, '0')}`;
+  if (fark <= 0) {
+    countdown.innerText = "Etkinlik başladı!";
+    return;
   }
+
+  const gun = Math.floor(fark / (1000 * 60 * 60 * 24));
+  const saat = Math.floor((fark % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const dakika = Math.floor((fark % (1000 * 60 * 60)) / (1000 * 60));
+  const saniye = Math.floor((fark % (1000 * 60)) / 1000);
+
+  countdown.innerText = `${gun}g ${saat.toString().padStart(2, '0')}:${dakika.toString().padStart(2, '0')}:${saniye.toString().padStart(2, '0')}`;
 }
 
+// Sayacı her saniyede bir güncelle
 setInterval(geriSayimGuncelle, 1000);
-geriSayimGuncelle();
+geriSayimGuncelle(); // Sayfa yüklenir yüklenmez göster.
