@@ -1,7 +1,7 @@
-// Türkiye yerel saatiyle 25 Haziran 2025, saat 14:00
-const hedefTarih = new Date(2025, 5, 25, 14, 0, 0); // Haziran = 5 (0 tabanlı)
+// Hedef zamanı manuel UTC'ye çeviriyoruz: Türkiye saati 2025-06-25 14:00 → UTC 11:00
+const hedefTarih = new Date(Date.UTC(2025, 5, 25, 11, 0, 0)); 
+// Aylar 0 tabanlıdır, Haziran = 5
 
-// Countdown.js ile geri sayım fonksiyonu
 function geriSayimGuncelle() {
   const simdi = new Date();
   const fark = countdown(simdi, hedefTarih, countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
