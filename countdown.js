@@ -1,6 +1,5 @@
-// Hedef zamanı manuel UTC'ye çeviriyoruz: Türkiye saati 2025-06-25 14:00 → UTC 11:00
-const hedefTarih = new Date(Date.UTC(2025, 5, 25, 11, 0, 0)); 
-// Aylar 0 tabanlıdır, Haziran = 5
+// Türkiye saatiyle 25 Haziran 2025, saat 14:00 => UTC 11:00
+const hedefTarih = new Date(Date.UTC(2025, 5, 25, 11, 0, 0)); // Ay 0 tabanlı: Haziran = 5
 
 function geriSayimGuncelle() {
   const simdi = new Date();
