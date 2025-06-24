@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atık Yakala ve Dönüştür</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #c8e6c9;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      background: linear-gradient(to top, #a5d6a7, #e8f5e9);
+      border: 4px solid #388e3c;
+      border-radius: 12px;
+    }
+    #score {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #388e3c;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 18px;
+      box-shadow: 0 0 10px #2e7d32;
+      z-index: 10;
+    }
+    #gameOver {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      font-size: 24px;
+      text-align: center;
+      display: none;
+      z-index: 10;
+    }
+    #gameOver button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Üst Menü -->
+  <header class="bg-green-600 text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold">Soya Project</a>
+      <nav class="space-x-4">
+        <a href="index.html" class="hover:underline">Anasayfa</a>
+        <a href="about.html" class="hover:underline">Hakkında</a>
+        <a href="team.html" class="hover:underline">Biz Kimiz</a>
+        <a href="content.html" class="hover:underline">İçerikler</a>
+        <a href="games.html" class="hover:underline">Oyunlar</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Oyun Skor ve Canvas -->
+  <main class="flex-grow relative">
+    <div id="score">Skor: 0 | Can: 3</div>
+    <div id="gameOver">Oyun Bitti!<br><button onclick="location.reload()">Yeniden Başlat</button></div>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 py-6">
+    <div class="container mx-auto px-4 text-center">
+      <p class="mb-2">&copy; 2025 Soya Project. Tüm hakları saklıdır.</p>
+      <div class="flex justify-center space-x-4">
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const gameOverEl = document.getElementById("gameOver");
+
+    const basketImg = new Image();
+    basketImg.src = "recycle-bin.png"; // kendi görselini ekle
+
+    const itemImages = {
+      plastik: "plastic.png",
+      cam: "glass.png",
+      kagit: "paper.png",
+      metal: "metal.png",
+      organic: "organic.png"
+    };
+
+    const items = [
+      { type: "plastik" },
+      { type: "cam" },
+      { type: "kagit" },
+      { type: "metal" },
+      { type: "organic" }
+    ];
+
+    const basket = {
+      x: 160,
+      y: 550,
+      width: 100,
+      height: 65.5,
+      speed: 5
+    };
+
+    let fallingItems = [];
+    let score = 0;
+    let lives = 3;
+    let gameActive = true;
+    let keys = {};
+
+    let speedMultiplier = 1;
+    let spawnInterval = 1000;
+    let spawnTimer;
+
+    const bgMusic = new Audio("music.mp3");
+    bgMusic.loop = true;
+    bgMusic.volume = 0.4;
+
+    const collectSound = new Audio("pickup.mp3");
+    collectSound.volume = 0.6;
+
+    function spawnItem() {
+      if (!gameActive) return;
+      const item = items[Math.floor(Math.random() * items.length)];
+      fallingItems.push({
+        ...item,
+        x: Math.random() * 360,
+        y: -40,
+        width: 48,
+        height: 48,
+        speed: (2 + Math.random() * 2) * speedMultiplier
+      });
+    }
+
+    function update() {
+      if (!gameActive) return;
+
+      if (keys["ArrowLeft"] && basket.x > 0) basket.x -= basket.speed;
+      if (keys["ArrowRight"] && basket.x + basket.width < canvas.width) basket.x += basket.speed;
+
+      for (let i = fallingItems.length - 1; i >= 0; i--) {
+        const item = fallingItems[i];
+        item.y += item.speed;
+
+        if (
+          item.y + item.height > basket.y &&
+          item.x < basket.x + basket.width &&
+          item.x + item.width > basket.x
+        ) {
+          score++;
+          collectSound.currentTime = 0;
+          collectSound.play();
+          fallingItems.splice(i, 1);
+        } else if (item.y > canvas.height) {
+          lives--;
+          fallingItems.splice(i, 1);
+          if (lives <= 0) {
+            gameActive = false;
+            bgMusic.pause();
+            gameOverEl.style.display = "block";
+            clearInterval(spawnTimer);
+          }
+        }
+      }
+
+      if (score > 0 && score % 10 === 0) {
+        speedMultiplier = 1 + score * 0.02;
+        clearInterval(spawnTimer);
+        spawnInterval = Math.max(400, 1000 - score * 10);
+        spawnTimer = setInterval(spawnItem, spawnInterval);
+      }
+
+      scoreEl.textContent = `Skor: ${score} | Can: ${lives}`;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (basketImg.complete) {
+        ctx.drawImage(basketImg, basket.x, basket.y, basket.width, basket.height);
+      } else {
+        ctx.fillStyle = "#2e7d32";
+        ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+      }
+
+      for (const item of fallingItems) {
+        const img = new Image();
+        img.src = itemImages[item.type];
+        if (img.complete) {
+          ctx.drawImage(img, item.x, item.y, item.width, item.height);
+        } else {
+          ctx.fillStyle = "gray";
+          ctx.fillRect(item.x, item.y, item.width, item.height);
+        }
+      }
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      if (gameActive) requestAnimationFrame(gameLoop);
+    }
+
+    window.addEventListener("keydown", e => keys[e.key] = true);
+    window.addEventListener("keyup", e => keys[e.key] = false);
+
+    spawnTimer = setInterval(spawnItem, spawnInterval);
+    bgMusic.play().catch(() => {});
+    gameLoop();
+  </script>
+</body>
+</html>

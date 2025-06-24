@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soya Project - Oyunlar</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-white text-gray-800">
+
+  <!-- Üst Menü -->
+  <header class="bg-green-600 text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold">Soya Project</a>
+      <nav class="space-x-4">
+        <a href="index.html" class="hover:underline">Anasayfa</a>
+        <a href="about.html" class="hover:underline">Hakkında</a>
+        <a href="team.html" class="hover:underline">Biz Kimiz</a>
+        <a href="content.html" class="hover:underline">İçerikler</a>
+        <a href="games.html" class="hover:underline">Oyunlar</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Oyunlar Bölümü -->
+  <main class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold mb-10 text-green-700">Sürdürülebilirlik Oyunları</h1>
+
+      <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Oyun Kartı 1 -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition">
+          <img src="images/oyun1.jpg" alt="Oyun 1" class="w-full h-50 object-cover rounded-lg mb-6">
+          <h2 class="text-xl font-semibold mb-2">Atık Yakala ve Dönüştür</h2>
+          <p class="text-gray-600 mb-4">Havadan düşen atıkları yakala ve geri dönüşüm puanı topla!</p>
+          <a href="oyun1.html" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full inline-block">Oyna</a>
+        </div>
+
+        <!-- Oyun Kartı 2 -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition">
+          <img src="images/oyun2.png" alt="Oyun 2" class="w-full h-50 object-cover rounded-lg mb-6">
+          <h2 class="text-xl font-semibold mb-2">Karbon Ayak İzi Testi</h2>
+          <p class="text-gray-600 mb-4">Karbon ayak izin ne kadar? Öğren ve dünyayı koru!</p>
+          <a href="oyun2.html" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full inline-block">Oyna</a>
+        </div>
+
+        <!-- Oyun Kartı 3 -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition">
+          <img src="images/oyun3.png" alt="Oyun 3" class="w-full h-50 object-cover rounded-lg mb-6">
+          <h2 class="text-xl font-semibold mb-2">EKO Dönüşüm</h2>
+          <p class="text-gray-600 mb-4">Eğlen ve eşleştir. Atıkları geri dönüştür,ekolojik dengeyi koru!</p>
+          <a href="oyun3.html" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full inline-block">Oyna</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 py-6 mt-12">
+    <div class="container mx-auto px-4 text-center">
+      <p class="mb-2">&copy; 2025 Soya Project. Tüm hakları saklıdır.</p>
+      <div class="flex justify-center space-x-4">
+        <a href="https://www.instagram.com/soyaproject" target="_blank" class="text-green-600 hover:underline">Instagram</a>
+        <a href="https://chat.whatsapp.com/GQIQdHyoz8AF3sJ2Hfnij3" target="_blank" class="text-green-600 hover:underline">WhatsApp</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
