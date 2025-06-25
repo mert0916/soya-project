@@ -7,11 +7,14 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      touch-action: none;
       font-family: 'Segoe UI', sans-serif;
       background: #c8e6c9;
-      overflow: hidden;
     }
     canvas {
       display: block;
@@ -75,7 +78,7 @@
     </div>
   </header>
 
-  <!-- Oyun -->
+  <!-- Oyun Alanı -->
   <main class="flex-grow relative">
     <div id="score">Skor: 0 | Can: 3</div>
     <div id="gameOver">Oyun Bitti!<br><button onclick="location.reload()">Yeniden Başlat</button></div>
@@ -97,7 +100,7 @@
     const gameOverEl = document.getElementById("gameOver");
 
     const basketImg = new Image();
-    basketImg.src = "recycle-bin.png"; // Kendi görselini buraya koy
+    basketImg.src = "recycle-bin.png"; // Görsel yolunu kendi dosyana göre düzenle
 
     const itemImages = {
       plastik: "plastic.png",
@@ -224,7 +227,7 @@
     window.addEventListener("keydown", e => keys[e.key] = true);
     window.addEventListener("keyup", e => keys[e.key] = false);
 
-    // Dokunarak sürükleme (Mobil destek)
+    // Mobil dokunma desteği – kutuyu sürüklemek için
     let isDragging = false;
     let dragOffsetX = 0;
 
