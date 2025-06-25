@@ -20,6 +20,9 @@
     canvas {
       display: block;
       margin: auto;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 2 / 3;
       background: linear-gradient(to top, #a5d6a7, #e8f5e9);
       border: 4px solid #388e3c;
       border-radius: 12px;
@@ -65,7 +68,6 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-  <!-- Üst Menü -->
   <header class="bg-green-600 text-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <a href="index.html" class="text-2xl font-bold">Soya Project</a>
@@ -79,26 +81,41 @@
     </div>
   </header>
 
-  <!-- Oyun Alanı -->
   <main class="flex-grow relative">
     <div id="score">Skor: 0 | Can: 3</div>
     <div id="gameOver">Oyun Bitti!<br><button onclick="location.reload()">Yeniden Başlat</button></div>
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <canvas id="gameCanvas"></canvas>
   </main>
 
-  <!-- Footer -->
   <footer class="bg-gray-100 py-6">
     <div class="container mx-auto px-4 text-center">
       <p class="mb-2">&copy; 2025 Soya Project. Tüm hakları saklıdır.</p>
     </div>
   </footer>
 
-  <!-- JS -->
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
+
     const scoreEl = document.getElementById("score");
     const gameOverEl = document.getElementById("gameOver");
+
+    // Ekrana göre canvas boyutlandırma
+    function resizeCanvas() {
+      const ratio = 2 / 3;
+      let width = window.innerWidth;
+      let height = width / ratio;
+
+      if (height > window.innerHeight * 0.8) {
+        height = window.innerHeight * 0.8;
+        width = height * ratio;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
     const basketImg = new Image();
     basketImg.src = "recycle-bin.png";
@@ -136,7 +153,7 @@
       const item = items[Math.floor(Math.random() * items.length)];
       fallingItems.push({
         ...item,
-        x: Math.random() * 360,
+        x: Math.random() * (canvas.width - 48),
         y: -40,
         width: 48,
         height: 48,
@@ -187,6 +204,7 @@
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       if (basketImg.complete) {
         ctx.drawImage(basketImg, basket.x, basket.y, basket.width, basket.height);
       } else {
@@ -215,14 +233,14 @@
     window.addEventListener("keydown", e => keys[e.key] = true);
     window.addEventListener("keyup", e => keys[e.key] = false);
 
-    // Mobilde kutuyu sürükleme
+    // Dokunmatik kontrol
     let isDragging = false, dragOffsetX = 0;
-
     canvas.addEventListener("touchstart", function (e) {
       const touch = e.touches[0];
       const rect = canvas.getBoundingClientRect();
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
+
       if (
         x >= basket.x &&
         x <= basket.x + basket.width &&
@@ -249,10 +267,7 @@
       isDragging = false;
     });
 
-    // 📌 Mobilde ekran kaymasını engelle
-    document.addEventListener('touchmove', function (e) {
-      e.preventDefault();
-    }, { passive: false });
+    document.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
     spawnTimer = setInterval(spawnItem, spawnInterval);
     bgMusic.play().catch(() => {});
