@@ -110,22 +110,16 @@
     };
 
     function updateBasketDimensions() {
-      // Basket genişliğini canvas genişliğinin %25'i yap
       basket.width = canvas.width * 0.25;
-      // Oranı koru
       basket.height = basket.width * 0.655;
-      // Yatay ortala
       if (basket.x === 0) {
         basket.x = (canvas.width - basket.width) / 2;
       }
-      // Basket'in alt kısmı canvas altından 10px yukarda olsun
       basket.y = canvas.height - basket.height - 10;
-      // Yatay sınırları zorla
       if (basket.x < 0) basket.x = 0;
       if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
     }
 
-    // Canvas boyutlandırma ve basket'i güncelleme
     function resizeCanvas() {
       const ratio = 2 / 3;
       let width = window.innerWidth;
@@ -163,6 +157,7 @@
     let fallingItems = [], score = 0, lives = 3;
     let gameActive = true, keys = {};
     let speedMultiplier = 1, spawnInterval = 1000, spawnTimer;
+    let lastSpawnInterval = spawnInterval;
 
     const bgMusic = new Audio("music.mp3");
     bgMusic.loop = true;
@@ -190,7 +185,6 @@
       if (keys["ArrowLeft"] && basket.x > 0) basket.x -= basket.speed;
       if (keys["ArrowRight"] && basket.x + basket.width < canvas.width) basket.x += basket.speed;
 
-      // Basket yatay sınırları tekrar kontrol et
       if (basket.x < 0) basket.x = 0;
       if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
 
@@ -219,11 +213,18 @@
         }
       }
 
+      // Spawn interval ve hız değişimi sadece interval değiştiğinde yapılacak
       if (score > 0 && score % 10 === 0) {
-        speedMultiplier = 1 + score * 0.02;
-        clearInterval(spawnTimer);
-        spawnInterval = Math.max(400, 1000 - score * 10);
-        spawnTimer = setInterval(spawnItem, spawnInterval);
+        const newSpeedMultiplier = 1 + score * 0.02;
+        const newSpawnInterval = Math.max(400, 1000 - score * 10);
+
+        if (newSpawnInterval !== lastSpawnInterval) {
+          speedMultiplier = newSpeedMultiplier;
+          spawnInterval = newSpawnInterval;
+          clearInterval(spawnTimer);
+          spawnTimer = setInterval(spawnItem, spawnInterval);
+          lastSpawnInterval = spawnInterval;
+        }
       }
 
       scoreEl.textContent = `Skor: ${score} | Can: ${lives}`;
@@ -242,7 +243,6 @@
       for (const item of fallingItems) {
         const img = new Image();
         img.src = itemImages[item.type];
-        // Burada img.complete kontrolü yetersiz; fakat basit kalsın diye aynen bırakıyorum
         if (img.complete) {
           ctx.drawImage(img, item.x, item.y, item.width, item.height);
         } else {
@@ -298,8 +298,18 @@
     // Mobilde ekran kaymasını engelle
     document.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
+    // Müzik, kullanıcı etkileşimi ile başlatılacak
+    let bgMusicStarted = false;
+    function tryStartMusic() {
+      if (!bgMusicStarted) {
+        bgMusic.play().catch(() => {});
+        bgMusicStarted = true;
+      }
+    }
+    window.addEventListener("touchstart", tryStartMusic, { once: true });
+    window.addEventListener("click", tryStartMusic, { once: true });
+
     spawnTimer = setInterval(spawnItem, spawnInterval);
-    bgMusic.play().catch(() => {});
     gameLoop();
   </script>
 </body>
