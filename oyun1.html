@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Atık Yakala ve Dönüştür</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
@@ -75,7 +75,7 @@
     </div>
   </header>
 
-  <!-- Oyun Skor ve Canvas -->
+  <!-- Oyun -->
   <main class="flex-grow relative">
     <div id="score">Skor: 0 | Can: 3</div>
     <div id="gameOver">Oyun Bitti!<br><button onclick="location.reload()">Yeniden Başlat</button></div>
@@ -86,8 +86,6 @@
   <footer class="bg-gray-100 py-6">
     <div class="container mx-auto px-4 text-center">
       <p class="mb-2">&copy; 2025 Soya Project. Tüm hakları saklıdır.</p>
-      <div class="flex justify-center space-x-4">
-      </div>
     </div>
   </footer>
 
@@ -99,7 +97,7 @@
     const gameOverEl = document.getElementById("gameOver");
 
     const basketImg = new Image();
-    basketImg.src = "recycle-bin.png"; // kendi görselini ekle
+    basketImg.src = "recycle-bin.png"; // Kendi görselini buraya koy
 
     const itemImages = {
       plastik: "plastic.png",
@@ -225,6 +223,43 @@
 
     window.addEventListener("keydown", e => keys[e.key] = true);
     window.addEventListener("keyup", e => keys[e.key] = false);
+
+    // Dokunarak sürükleme (Mobil destek)
+    let isDragging = false;
+    let dragOffsetX = 0;
+
+    canvas.addEventListener("touchstart", function (e) {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+
+      if (
+        x >= basket.x &&
+        x <= basket.x + basket.width &&
+        y >= basket.y &&
+        y <= basket.y + basket.height
+      ) {
+        isDragging = true;
+        dragOffsetX = x - basket.x;
+      }
+    });
+
+    canvas.addEventListener("touchmove", function (e) {
+      if (isDragging) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+
+        basket.x = x - dragOffsetX;
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+      }
+    });
+
+    canvas.addEventListener("touchend", function () {
+      isDragging = false;
+    });
 
     spawnTimer = setInterval(spawnItem, spawnInterval);
     bgMusic.play().catch(() => {});
