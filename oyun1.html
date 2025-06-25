@@ -12,6 +12,7 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+      overscroll-behavior: none;
       touch-action: none;
       font-family: 'Segoe UI', sans-serif;
       background: #c8e6c9;
@@ -100,7 +101,7 @@
     const gameOverEl = document.getElementById("gameOver");
 
     const basketImg = new Image();
-    basketImg.src = "recycle-bin.png"; // Görsel yolunu kendi dosyana göre düzenle
+    basketImg.src = "recycle-bin.png";
 
     const itemImages = {
       plastik: "plastic.png",
@@ -111,30 +112,17 @@
     };
 
     const items = [
-      { type: "plastik" },
-      { type: "cam" },
-      { type: "kagit" },
-      { type: "metal" },
-      { type: "organic" }
+      { type: "plastik" }, { type: "cam" },
+      { type: "kagit" }, { type: "metal" }, { type: "organic" }
     ];
 
     const basket = {
-      x: 160,
-      y: 550,
-      width: 100,
-      height: 65.5,
-      speed: 5
+      x: 160, y: 550, width: 100, height: 65.5, speed: 5
     };
 
-    let fallingItems = [];
-    let score = 0;
-    let lives = 3;
-    let gameActive = true;
-    let keys = {};
-
-    let speedMultiplier = 1;
-    let spawnInterval = 1000;
-    let spawnTimer;
+    let fallingItems = [], score = 0, lives = 3;
+    let gameActive = true, keys = {};
+    let speedMultiplier = 1, spawnInterval = 1000, spawnTimer;
 
     const bgMusic = new Audio("music.mp3");
     bgMusic.loop = true;
@@ -227,16 +215,14 @@
     window.addEventListener("keydown", e => keys[e.key] = true);
     window.addEventListener("keyup", e => keys[e.key] = false);
 
-    // Mobil dokunma desteği – kutuyu sürüklemek için
-    let isDragging = false;
-    let dragOffsetX = 0;
+    // Mobilde kutuyu sürükleme
+    let isDragging = false, dragOffsetX = 0;
 
     canvas.addEventListener("touchstart", function (e) {
       const touch = e.touches[0];
       const rect = canvas.getBoundingClientRect();
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
-
       if (
         x >= basket.x &&
         x <= basket.x + basket.width &&
@@ -253,7 +239,6 @@
         const touch = e.touches[0];
         const rect = canvas.getBoundingClientRect();
         const x = touch.clientX - rect.left;
-
         basket.x = x - dragOffsetX;
         if (basket.x < 0) basket.x = 0;
         if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
@@ -263,6 +248,11 @@
     canvas.addEventListener("touchend", function () {
       isDragging = false;
     });
+
+    // 📌 Mobilde ekran kaymasını engelle
+    document.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, { passive: false });
 
     spawnTimer = setInterval(spawnItem, spawnInterval);
     bgMusic.play().catch(() => {});
