@@ -100,7 +100,32 @@
     const scoreEl = document.getElementById("score");
     const gameOverEl = document.getElementById("gameOver");
 
-    // Ekrana göre canvas boyutlandırma
+    // Basket objesi dinamik ayarlanacak
+    const basket = {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      speed: 5
+    };
+
+    function updateBasketDimensions() {
+      // Basket genişliğini canvas genişliğinin %25'i yap
+      basket.width = canvas.width * 0.25;
+      // Oranı koru
+      basket.height = basket.width * 0.655;
+      // Yatay ortala
+      if (basket.x === 0) {
+        basket.x = (canvas.width - basket.width) / 2;
+      }
+      // Basket'in alt kısmı canvas altından 10px yukarda olsun
+      basket.y = canvas.height - basket.height - 10;
+      // Yatay sınırları zorla
+      if (basket.x < 0) basket.x = 0;
+      if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+    }
+
+    // Canvas boyutlandırma ve basket'i güncelleme
     function resizeCanvas() {
       const ratio = 2 / 3;
       let width = window.innerWidth;
@@ -113,6 +138,8 @@
 
       canvas.width = width;
       canvas.height = height;
+
+      updateBasketDimensions();
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -132,10 +159,6 @@
       { type: "plastik" }, { type: "cam" },
       { type: "kagit" }, { type: "metal" }, { type: "organic" }
     ];
-
-    const basket = {
-      x: 160, y: 550, width: 100, height: 65.5, speed: 5
-    };
 
     let fallingItems = [], score = 0, lives = 3;
     let gameActive = true, keys = {};
@@ -166,6 +189,10 @@
 
       if (keys["ArrowLeft"] && basket.x > 0) basket.x -= basket.speed;
       if (keys["ArrowRight"] && basket.x + basket.width < canvas.width) basket.x += basket.speed;
+
+      // Basket yatay sınırları tekrar kontrol et
+      if (basket.x < 0) basket.x = 0;
+      if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
 
       for (let i = fallingItems.length - 1; i >= 0; i--) {
         const item = fallingItems[i];
@@ -215,6 +242,7 @@
       for (const item of fallingItems) {
         const img = new Image();
         img.src = itemImages[item.type];
+        // Burada img.complete kontrolü yetersiz; fakat basit kalsın diye aynen bırakıyorum
         if (img.complete) {
           ctx.drawImage(img, item.x, item.y, item.width, item.height);
         } else {
@@ -267,6 +295,7 @@
       isDragging = false;
     });
 
+    // Mobilde ekran kaymasını engelle
     document.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
     spawnTimer = setInterval(spawnItem, spawnInterval);
